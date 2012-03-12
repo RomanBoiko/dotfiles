@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="DevTool" default="xslt">
+	<property name="out"             value="out/out.xml"/>
+	<property name="xml"             value="in/in.xml"/>
+	<property name="f"               value="in/in.txt"/>
+	<property name="xslt"            value="in/in.xsl"/>
+	<property name="sql"             value="in/in.sql"/>
+	<property name="ssl"             value="in/in.cert"/>
+	<property name="xsd.dir"         value="in/in.xsd"/>
+		
+	<loadproperties srcFile="${basedir}/build.properties"/>
+
+	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpath="lib/groovy-all.jar"/>
+	
+	<target name="clean" description="==remove ${out}">
+		<delete file="${out}"/>
+	</target>
+	
+	
+	<target name="xslt" depends="clean" description="==apply ${xslt} to ${xml}">
+		<xslt in="${xml}" out="${out}" style="${xslt}" />
+		
+		<loadfile property="response" srcFile="${out}"/>
+		<antcall target="out"/>
+	</target>
+
+	<target name="xsd" description="==validate ${xml} with schemas in {xsd.dir}">
+		
+		<pathconvert dirsep="/" property="xsd.files">
+			<!--<path>
+					<pathelement location="${src.dir}/cxl_common.xsd" />
+					<pathelement location="${src.dir}/cxl_response.xsd" />
+				</path>-->
+			<fileset dir="${xsd.dir}">
+				<include name="**/*.xsd"/>
+			</fileset>
+		</pathconvert>
+		
+		<xmlvalidate failonerror="yes" lenient="no" warn="yes">
+			<fileset file="${xml}"/>
+			<attribute name="http://xml.org/sax/features/validation" value="true" />
+			<attribute name="http://apache.org/xml/features/validation/schema" value="true" />
+			<attribute name="http://xml.org/sax/features/namespaces" value="true" />
+			<property name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation" value="${xsd.files}" />
+		</xmlvalidate>
+	</target>
+	
+	<target name="convert2u" description="==convert ${f} to Unix format">
+		<replaceregexp file="${f}" match="\r(\n)" replace="\1" flags="sg"/>
+		
+		<loadfile property="response" srcFile="${f}"/>
+		<echo message="${response}" file="${out}"/>
+		<antcall target="out"/>
+	</target>
+	
+	<target name="formatxml" description="==format ${xml} file">
+		<loadfile property="request" srcFile="${xml}"/>
+		<groovy>
+			<![CDATA[
+			project.setProperty("response", formatXml(project.properties.request))
+			
+			def formatXml(xml){
+				document = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new org.xml.sax.InputSource(new StringReader(xml)));
+				def format = new org.apache.xml.serialize.OutputFormat(document);
+				format.setLineWidth(120);
+				format.setIndenting(true);
+				format.setIndent(4);
+				def out = new StringWriter();
+				def serializer = new org.apache.xml.serialize.XMLSerializer(out, format);
+				serializer.serialize(document);
+				return out.toString();
+			}
+			]]>
+		</groovy>
+		
+		<echo message="${response}" file="${out}"/>
+		<antcall target="out"/>
+	</target>
+
+	<target name="soap" description="==call ${url} with ${xml} request using ${ssl} cerificate">
+		<loadfile property="request" srcFile="${xml}"/>
+
+		<groovy>
+			<![CDATA[
+			setSSLCertificateForWebServiceCalls(project.properties.ssl)
+			project.setProperty("response", invokeWS(project.properties.url, project.properties.request))
+			
+			def setSSLCertificateForWebServiceCalls(certificateLocation) {
+				System.setProperty("javax.net.ssl.trustStore", certificateLocation)
+			}
+			
+			def invokeWS(serviceUrl, request){
+				def connection = new java.net.URL(serviceUrl).openConnection()
+				connection.setRequestMethod("POST")
+				connection.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
+				connection.setRequestProperty("Content-Length", "" + request.length());
+				connection.setRequestProperty("SOAPAction", "");
+				connection.doOutput = true
+			
+				def writer = new OutputStreamWriter(connection.outputStream)
+				writer.write(request)
+				writer.flush()
+				writer.close()
+				connection.connect()
+				return connection.content.text
+			}
+			]]>
+		</groovy>
+
+		<echo message="${response}" file="${out}"/>
+		<antcall target="out"/>
+	</target>
+
+	<target name="xpath" description="==extract from ${xml} by ${xpath}">
+		<loadfile property="request" srcFile="${xml}"/>
+
+		<groovy>
+			<![CDATA[
+			project.setProperty("response", getNodesByXpath(project.properties.request, project.properties.xpath))
+
+			def getNodesByXpath(xml, xpath) {
+				def builder = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				def doc     = builder.parse(new ByteArrayInputStream(xml.bytes))
+				def expr    = javax.xml.xpath.XPathFactory.newInstance().newXPath().compile(xpath)
+				def nodes   = expr.evaluate(doc, javax.xml.xpath.XPathConstants.NODESET)
+				def resultList = nodes.collect { node -> node.textContent }
+				return resultList.collect { it }.join("==")
+			}
+			]]>
+		</groovy>
+		
+		<echo message="${response}" file="${out}"/>
+		<antcall target="out"/>
+	</target>
+
+	<target name="sql" description="==execute ${sql} file">
+		<sql driver="oracle.jdbc.driver.OracleDriver" 
+			classpath="lib/ojdbc.jar"
+			url="${database.url}"
+			userid="${database.username}" 
+			password="${database.password}" 
+			rdbms="oracle" 
+			autocommit="true"
+			onerror="abort"
+			showheaders="true"
+			showtrailers="false"
+			print="yes"
+			output="${out}"
+			delimiter="/"
+			keepformat="false"
+			src="${sql}"/>
+		
+		<loadfile property="response" srcFile="${out}"/>
+		<antcall target="out"/>
+	</target>
+
+	
+	
+	<!-- UTILS -->
+	<target name="time"> 
+		<tstamp prefix="start">
+			<format property="touch.time" pattern="dd-MM-yyyy HH:mm:SSS" />
+		</tstamp>
+		<echo message="[${start.touch.time}]" />
+	</target>
+	
+	<target name="out">
+		<echo message="=========================="/>
+		<echo message="==========OUTPUT=========="/>
+		<echo message="=========================="/>
+		<echo/>
+		<echo message="${response}"/>
+		<echo/>
+		<echo message="=========================="/>
+	</target>
+
+	<!-- convert WIN path to UNIX http://ant.apache.org/manual/Tasks/pathconvert.html -->
+</project>
