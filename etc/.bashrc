@@ -13,9 +13,11 @@ if [ -d "/cygdrive" ]; then
 	unset TEMP
 	alias ex='explorer .'
 	alias path='cygpath -d'
-	echo '$APPS/kdiff3/kdiff3.exe  `cygpath -d ${6}` `cygpath -d ${7}` -L1 "${3}" -L2 "${5}"' > /usr/local/bin/kdiff.sh
+	echo '$APPS/kdiff3/kdiff3.exe  `cygpath -d ${6}` `cygpath -d ${7}` -L1 "${3}" -L2 "${5}"' > /usr/local/bin/kdiff
 	echo '$APPS/sublime/sublime_text `cygpath -d ${1}` &' > /usr/local/bin/s
 	echo '$ECLIPSE --launcher.openFile `cygpath -d ${1}`' > /usr/local/bin/e
+	echo '$APPS/putty/PUTTY.EXE -ssh boikoro@$1 &'                                            > /usr/local/bin/putty
+	echo 'java -cp `cygpath -w m2repo/org/codehaus/groovy/groovy-all/1.8.0/groovy-all-1.8.0.jar` groovy.lang.GroovyShell $@' > /usr/local/bin/groovy
 else
 	export APPS=/home/vu/apps
 	export WORKSPACE=/home/vu/ws
@@ -33,6 +35,8 @@ alias cda='cd $APPS'
 alias h='history | grep '
 alias ec='s ~/.bashrc'
 alias mc='mc -b'
+alias http='python -m SimpleHTTPServer'
+alias jgit="$APPS/jgit/org.eclipse.jgit.pgm-2.1.0.201209190230-r.sh"
 
 export EDITOR='vim'
 export MAVEN_OPTS=''
@@ -44,11 +48,13 @@ export ANT_HOME=$APPS/ant
 
 export PATH=$APPS/erlang/bin:$GRADLE_HOME/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
-alias svnd='svn diff --diff-cmd kdiff.sh'
+alias svnd='svn diff --diff-cmd kdiff'
 alias svnl='svn changelist tc'
 alias svnci='svn ci --cl tc -m'
+alias svnre='svn revert '
+alias svnh='history | grep ci'
 
-#####VIM#####
+##### VIM #####
 echo 'set number' > ~/.vimrc
 echo 'set list listchars=eol:$,tab:>-,trail:.,extends:>,precedes:<,nbsp:_' >> ~/.vimrc
 echo 'set tabstop=4' >> ~/.vimrc
@@ -57,6 +63,30 @@ echo 'set hlsearch' >> ~/.vimrc
 #echo 'set cursorline' >> ~/.vimrc
 echo 'imap ;; <Esc>' >> ~/.vimrc
 echo 'syntax on' >> ~/.vimrc
+
+##### GIT #####
+echo '[user]'                           > ~/.gitconfig
+echo 'name = boikoro'                  >> ~/.gitconfig
+echo 'email = roman.boiko@ubs.com'     >> ~/.gitconfig
+echo '[credential]'                    >> ~/.gitconfig
+echo 'helper = cache --timeout=3600'   >> ~/.gitconfig
+echo '[http]'                          >> ~/.gitconfig
+echo 'sslVerify = false'               >> ~/.gitconfig
+echo '[diff]'                          >> ~/.gitconfig
+echo 'tool = kdiff3'                   >> ~/.gitconfig
+echo '[difftool]'                      >> ~/.gitconfig
+echo 'prompt = false'                  >> ~/.gitconfig
+echo '[difftool "kdiff3"]'             >> ~/.gitconfig
+echo 'path = /usr/local/bin/kdiff'     >> ~/.gitconfig
+echo 'cmd = "$LOCAL" "$REMOTE"'        >> ~/.gitconfig
+
+alias gitd="git difftool"
+alias gitco="git checkout"
+alias gitm="git checkout master"
+alias gitb="git branch"
+alias gitst="git status"
+alias gitci="git commit"
+alias gitup="gitm; jgit fetch origin; git pull origin master"
 
 #updatedb --localpaths='' and locate usage instead of index
 #ssh boikoro@web175.webfaction.com
@@ -76,3 +106,4 @@ echo 'syntax on' >> ~/.vimrc
 # 	{ "keys": ["ctrl+shift+up"], "command": "select_lines", "args": {"forward": false} },
 # 	{ "keys": ["ctrl+shift+down"], "command": "select_lines", "args": {"forward": true} }
 # ]
+
