@@ -90,6 +90,8 @@ echo 'cmd = "$LOCAL" "$REMOTE"'        >> ~/.gitconfig
 echo 'header = Accept-Encoding: none'        > ~/.wgetrc
 echo 'user_agent = Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6' >> ~/.wgetrc
 
+echo '{:user {:plugins [[lein-exec "0.3.0"]]}}' > ~/.lein/profiles.clj
+
 alias gitd="git difftool"
 alias gitco="git checkout"
 alias gitm="git checkout master"
