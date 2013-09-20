@@ -1,7 +1,7 @@
 "cd ~/.vim
 "git clone https://github.com/kien/ctrlp.vim.git bundle/ctrlp.vim
 
-let ctrlp_root_markers=['~/ws/matcher/']
+let ctrlp_root_markers=['~/ws/']
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set number
 set autoindent
@@ -15,5 +15,5 @@ set noswapfile
 "set paste
 imap ;; <Esc>
 syntax on
-nnoremap <C-b> :CtrlP ~/ws/matcher/<cr>
-nnoremap <C-e> :E ~/ws/matcher/<cr>
+nnoremap <C-b> :CtrlP ~/ws/<cr>
+nnoremap <C-e> :E ~/ws/<cr>

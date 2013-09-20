@@ -5,7 +5,7 @@ export XMLLINT_INDENT="    "
 
 export APPS=/home/vu/apps
 export WORKSPACE=/home/vu/ws
-export ECLIPSE=$APPS/eclipse/eclipse
+export ECLIPSE=/usr/bin/eclipse
 alias e='$ECLIPSE --launcher.openFile'
 
 alias cdw='cd $WORKSPACE'
@@ -16,7 +16,7 @@ alias mc='mc -b'
 
 export EDITOR='/usr/bin/vim'
 export MAVEN_OPTS=''
-export JAVA_HOME=$APPS/jdk
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-armhf
 export MAVEN_HOME=$APPS/maven
 export M2_HOME=$MAVEN_HOME
 export ANT_HOME=$APPS/ant
@@ -32,7 +32,7 @@ alias svnre='svn revert '
 ##### GIT #####
 echo '[user]'                           > ~/.gitconfig
 echo 'name = boikoro'                  >> ~/.gitconfig
-echo 'email = roman.boiko@ubs.com'     >> ~/.gitconfig
+echo 'email = boiko.roman@gmail.com'   >> ~/.gitconfig
 alias gitd="git diff"
 alias gitco="git checkout"
 alias gitb="git branch"

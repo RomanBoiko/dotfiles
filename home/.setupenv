@@ -1,0 +1,2 @@
+sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree
+ssh-keygen -t rsa -C "boiko.roman@gmail.com"

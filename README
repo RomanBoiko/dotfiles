@@ -1,12 +1,3 @@
-==BEFORE USAGE==
--you should have ApacheAnt in your $PATH
--download groovy-all.jar from any maven repo to ${devtool-dir}/lib
-
-To use devtool:
-
--navigate to checkout dir
--type ant -p
-
-you will see available ant targets
+==DEV ENV CONFIGS AND UTILITIES==
 
 "!http://api.coderwall.com/romanboiko/endorsecount.png!":http://coderwall.com/romanboiko
