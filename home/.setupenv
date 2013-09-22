@@ -1,2 +1,4 @@
-sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree
+sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree g++ unzip
 ssh-keygen -t rsa -C "boiko.roman@gmail.com"
+cd ~/.vim
+git clone https://github.com/kien/ctrlp.vim.git bundle/ctrlp.vim

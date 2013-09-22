@@ -9,9 +9,11 @@ set nowrap
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
 set tabstop=2
 set shiftwidth=2
+set expandtab
 set wildignore+=*/target/*,*.class,*/.svn/*,*/.git/*
 set nobackup
 set noswapfile
+set hlsearch
 "set paste
 imap ;; <Esc>
 syntax on
