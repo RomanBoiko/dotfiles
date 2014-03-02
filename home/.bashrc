@@ -6,7 +6,7 @@ function parse_git_branch () {
 export PS1='\[\e[32m\]\u@\h \A \[\e[33m\]\w\[\e[0m\] $(parse_git_branch)\n$'
 #setxkbmap -layout "us,ua" -variant "," -option "grp:alt_shift_toggle"
 export HISTCONTROL="ignoredups"
-export XMLLINT_INDENT="    "
+export XMLLINT_INDENT=$'\t'
 
 export APPS=/home/vu/apps
 export WORKSPACE=/home/vu/ws
