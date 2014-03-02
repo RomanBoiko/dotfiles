@@ -1,4 +1,9 @@
-export PS1='\[\e[32m\]\u@\h \A \[\e[33m\]\w\[\e[0m\]\nλ '
+function parse_git_branch () {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+
+export PS1='\[\e[32m\]\u@\h \A \[\e[33m\]\w\[\e[0m\] $(parse_git_branch)\n$'
 #setxkbmap -layout "us,ua" -variant "," -option "grp:alt_shift_toggle"
 export HISTCONTROL="ignoredups"
 export XMLLINT_INDENT="    "
@@ -33,6 +38,9 @@ alias svnre='svn revert '
 echo '[user]'                           > ~/.gitconfig
 echo 'name = boikoro'                  >> ~/.gitconfig
 echo 'email = boiko.roman@gmail.com'   >> ~/.gitconfig
+echo '[color]'                         >> ~/.gitconfig
+echo 'ui = auto'                       >> ~/.gitconfig
+
 alias gitd="git diff"
 alias gitco="git checkout"
 alias gitb="git branch"
