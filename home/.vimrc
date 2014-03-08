@@ -45,3 +45,10 @@ nnoremap <C-h> <Esc>:vimgrep w **/*
 
 """"""EDITING
 imap <C-d> <Esc>ddi
+
+"moving selected block in visual mode
+vnoremap K xkP`[V`]
+vnoremap J xp`[V`]
+vnoremap L >gv
+vnoremap H <gv
+
