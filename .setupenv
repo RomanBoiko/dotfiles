@@ -1,0 +1,8 @@
+sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree g++ unzip curl lua5.2
+ssh-keygen -t rsa -C "boiko.roman@gmail.com"
+mkdir ~/ws
+cd ~/ws
+git clone git@github.com:RomanBoiko/devtools.git
+rm ~/.bashrc
+ln -s /home/vu/ws/devtools/.bashrc ~/.bashrc
+source ~/.bashrc
