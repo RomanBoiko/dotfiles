@@ -8,8 +8,9 @@ export PS1='\[\e[32m\]\u@\h \A \[\e[33m\]\w\[\e[0m\] $(parse_git_branch)\n$'
 export HISTCONTROL="ignoredups"
 export XMLLINT_INDENT=$'\t'
 
-export APPS=/home/vu/apps
-export WORKSPACE=/home/vu/ws
+export APPS=~/apps
+export BIN=~/bin
+export WORKSPACE=~/ws
 export ECLIPSE=/usr/bin/eclipse
 alias e='$ECLIPSE --launcher.openFile'
 
@@ -73,9 +74,9 @@ set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
 "set expandtab
 set tabstop=4
 set shiftwidth=4
+set noswapfile
 set wildignore+=*/target/*,*.class,*/.svn/*,*/.git/*
 set nobackup
-set noswapfile
 "set paste
 "imap ;; <Esc>
 "set cursorline
@@ -109,3 +110,19 @@ EOF
 vimrc > ~/.vimrc
 
 source /etc/bash_completion.d/git
+
+function install_mvn
+{
+  pushd .
+  cd $APPS
+  wget ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
+  tar xzvf apache-maven*.tar.gz
+  rm apache-maven*.tar.gz
+  ln -s $APPS/apache-maven* $APPS/maven
+  ln -s $APPS/maven/bin/mvn $BIN/mvn
+  popd
+}
+
+if [ ! -h $APPS/maven ]; then
+  install_mvn
+fi
