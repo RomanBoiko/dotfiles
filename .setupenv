@@ -4,5 +4,5 @@ mkdir ~/ws
 cd ~/ws
 git clone git@github.com:RomanBoiko/devtools.git
 rm ~/.bashrc
-ln -s /home/vu/ws/devtools/.bashrc ~/.bashrc
+ln -s ~/ws/devtools/.bashrc ~/.bashrc
 source ~/.bashrc

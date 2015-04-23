@@ -18,6 +18,7 @@ alias cda='cd $APPS'
 alias h='history | grep '
 alias vimbash='vim ~/.bashrc && source ~/.bashrc'
 alias mc='mc -b'
+alias xmlf="xmllint --format"
 
 export EDITOR='/usr/bin/vim'
 export MAVEN_OPTS=''
@@ -85,12 +86,12 @@ syntax on
 filetype plugin indent on
 
 """"""NAVIGATION
-let ctrlp_root_markers=['~/ws/vu-lmax/']
+let ctrlp_root_markers=['~/ws/']
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set runtimepath^=~/.vim/bundle/nerdtree
 let g:NERDTreeDirArrows=0
-nnoremap <C-p> :CtrlP ~/ws/vu-lmax/<cr>
-nnoremap <C-e> :E ~/ws/vu-lmax/<cr>
+nnoremap <C-p> :CtrlP ./<cr>
+nnoremap <C-e> :E ./<cr>
 map j gj
 map k gk
 
