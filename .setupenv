@@ -2,7 +2,7 @@ sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-ter
 ssh-keygen -t rsa -C "boiko.roman@gmail.com"
 mkdir ~/ws
 cd ~/ws
-git clone git@github.com:RomanBoiko/devtools.git
+git clone git@github.com:RomanBoiko/dotfiles.git
 rm ~/.bashrc
-ln -s ~/ws/devtools/.bashrc ~/.bashrc
+ln -s ~/ws/dotfiles/.bashrc ~/.bashrc
 source ~/.bashrc
