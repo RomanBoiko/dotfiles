@@ -47,6 +47,7 @@ alias gitb="git branch"
 alias gitst="git status"
 alias gitci="git commit"
 alias gitup="git checkout master; git fetch origin; git pull origin master"
+alias gitpushm="git push origin master"
 
 source /etc/bash_completion.d/git
 
