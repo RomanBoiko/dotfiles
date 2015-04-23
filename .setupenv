@@ -1,4 +1,4 @@
-sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree g++ unzip curl lua5.2
+sudo apt-get install vim eclipse-platform wget git libxml2-utils make xfonts-terminus chromium-browser tree g++ unzip curl lua5.2 ctags
 ssh-keygen -t rsa -C "boiko.roman@gmail.com"
 mkdir ~/ws
 cd ~/ws

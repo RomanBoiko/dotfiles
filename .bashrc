@@ -19,6 +19,7 @@ alias h='history | grep '
 alias vimbash='vim ~/.bashrc && source ~/.bashrc'
 alias mc='mc -b'
 alias xmlf="xmllint --format"
+alias ctagsgen="ctags --langmap=Lisp:+.clj --fields=+iaS --extra=+q -R ."
 
 export EDITOR='/usr/bin/vim'
 export MAVEN_OPTS=''
