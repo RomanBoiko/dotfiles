@@ -123,6 +123,3 @@ function install_mvn
   popd
 }
 
-if [ ! -h $APPS/maven ]; then
-  install_mvn
-fi
