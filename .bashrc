@@ -53,6 +53,10 @@ alias gitpushm="git push origin master"
 
 source /etc/bash_completion.d/git
 
+echo "setenv vbell off" > ~/.screenrc
+echo "xterm*font:     *-fixed-*-*-*-15-*" > ~/.Xresources
+xrdb -merge ~/.Xresources
+
 ##### VIM #####
 cat <<'EOF' > ~/.vimrc
 "cd ~/.vim
@@ -74,9 +78,9 @@ set autoindent
 "set nowrap
 set wrap
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
-"set expandtab
-set tabstop=4
-set shiftwidth=4
+set expandtab
+set tabstop=2
+set shiftwidth=2
 set noswapfile
 set wildignore+=*/target/*,*.class,*/.svn/*,*/.git/*
 set nobackup
