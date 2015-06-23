@@ -53,7 +53,11 @@ alias gitpushm="git push origin master"
 
 source /etc/bash_completion.d/git
 
-echo "setenv vbell off" > ~/.screenrc
+echo "vbell off" > ~/.screenrc
+echo "hardstatus on" >> ~/.screenrc
+echo "hardstatus alwayslastline" >> ~/.screenrc
+echo "hardstatus string \"%w\"" >> ~/.screenrc
+
 echo "xterm*font:     *-fixed-*-*-*-15-*" > ~/.Xresources
 xrdb -merge ~/.Xresources
 
