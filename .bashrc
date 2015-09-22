@@ -11,11 +11,10 @@ export APPS=~/apps
 export BIN=~/bin
 export WORKSPACE=~/ws
 export ECLIPSE=/usr/bin/eclipse
-alias e='$ECLIPSE --launcher.openFile'
 
+alias e='$ECLIPSE --launcher.openFile'
 alias cdw='cd $WORKSPACE'
 alias cda='cd $APPS'
-alias h='history | grep '
 alias vimbash='vim ~/.bashrc && source ~/.bashrc'
 alias mc='mc -b'
 alias xmlf="xmllint --format"
@@ -53,11 +52,13 @@ alias gitpushm="git push origin master"
 
 source /etc/bash_completion.d/git
 
+##### SCREEN #####
 echo "vbell off" > ~/.screenrc
 echo "hardstatus on" >> ~/.screenrc
 echo "hardstatus alwayslastline" >> ~/.screenrc
 echo "hardstatus string \"%w\"" >> ~/.screenrc
 
+##### XTERM #####
 echo "xterm*font:     *-fixed-*-*-*-15-*" > ~/.Xresources
 xrdb -merge ~/.Xresources
 
@@ -107,10 +108,11 @@ map k gk
 
 nnoremap <C-h> <Esc>:vimgrep w **/*
 " see search results : <Esc>:cw<cr>
+" next occurance: :cn
 
 
 """"""EDITING
-imap <C-d> <Esc>ddi
+" imap <C-d> <Esc>ddi
 
 "moving selected block in visual mode
 vnoremap K xkP\`[V\`]
