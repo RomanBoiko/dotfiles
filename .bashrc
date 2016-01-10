@@ -55,8 +55,9 @@ source /etc/bash_completion.d/git
 ##### SCREEN #####
 echo "vbell off" > ~/.screenrc
 echo "hardstatus on" >> ~/.screenrc
+echo "startup_message off" >> ~/.screenrc
 echo "hardstatus alwayslastline" >> ~/.screenrc
-echo "hardstatus string \"%w\"" >> ~/.screenrc
+echo "hardstatus string ' %w %-017=%Y-%m-%d %c'" >> ~/.screenrc
 
 ##### XTERM #####
 echo "xterm*font:     *-fixed-*-*-*-15-*" > ~/.Xresources
@@ -69,21 +70,26 @@ cat <<'EOF' > ~/.vimrc
 ""git clone https://github.com/scrooloose/nerdtree.git bundle/nerdtree
 
 """""SETTINGS
+set t_Co=256
+set term=xterm
+
 set encoding=utf8
 set ffs=unix,dos
 set incsearch
 set ruler
 set mouse=a
 set wildmenu
-set wildmode=list:longest,full
+"set wildmode=list:longest,full
 set autoread
 set hlsearch
 set number
 set autoindent
-"set nowrap
-set wrap
+set cindent
+set nospell
+set nowrap
+"set wrap
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
-"set expandtab
+set expandtab
 set tabstop=4
 set shiftwidth=4
 set noswapfile
@@ -91,22 +97,28 @@ set wildignore+=*/target/*,*.class,*/.svn/*,*/.git/*
 set nobackup
 "set paste
 "imap ;; <Esc>
-"set cursorline
 syntax on
-colorscheme darkblue
 filetype plugin indent on
 
 """"""NAVIGATION
-let ctrlp_root_markers=['~/ws/']
-set runtimepath^=~/.vim/bundle/ctrlp.vim
+"let ctrlp_root_markers=['~/ws/']
+"set runtimepath^=~/.vim/bundle/ctrlp.vim
+"nnoremap <C-p> :CtrlP ./<cr>
+
 set runtimepath^=~/.vim/bundle/nerdtree
 let g:NERDTreeDirArrows=0
-nnoremap <C-p> :CtrlP ./<cr>
+let g:NERDTreeWinSize=50
+
 nnoremap <C-e> :E ./<cr>
 map j gj
 map k gk
 
-nnoremap <C-h> <Esc>:vimgrep w **/*
+nnoremap <C-h> <Esc>:vimgrep  **/*<Left><Left><Left><Left><Left>
+nnoremap <C-l> <Esc>:vimgrep <c-r>" **/*<cr><Esc>:cw<cr>
+nnoremap <C-p> <Esc>:e **/
+" see search results: <Esc>:cw<cr>
+" next occurance: :cn
+
 " see search results : <Esc>:cw<cr>
 " next occurance: :cn
 
@@ -119,18 +131,24 @@ vnoremap K xkP\`[V\`]
 vnoremap J xp\`[V\`]
 vnoremap L >gv
 vnoremap H <gv
+
+nnoremap <Space> @q
+nnoremap <Leader>s :update<cr>
+
+set makeprg=javac.sh
+set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
+map <F2> :make<Return>:copen<Return>
+map <F3> :cnext<Return>
+map <F4> :cprevious<Return>
+map <F5> :cclose<Return>
+
+colorscheme less
+set cursorline
+hi CursorLine cterm=bold
+hi StatusLine ctermfg=white ctermbg=darkgray cterm=NONE
+hi MatchParen ctermfg=white ctermbg=red cterm=none
+hi LineNr ctermfg=darkgrey ctermbg=darkgrey
+hi Search term=reverse ctermfg=white ctermbg=red
 EOF
 
-
-function install_mvn
-{
-  pushd .
-  cd $APPS
-  wget ftp://mirror.reverse.net/pub/apache/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.tar.gz
-  tar xzvf apache-maven*.tar.gz
-  rm apache-maven*.tar.gz
-  ln -s $APPS/apache-maven* $APPS/maven
-  ln -s $APPS/maven/bin/mvn $BIN/mvn
-  popd
-}
-
+# watch -n 20 'gradle test 2>&1 | tail -n 40'
