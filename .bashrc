@@ -29,6 +29,20 @@ alias xmlf="xmllint --format"
 alias ctagsgen="ctags --langmap=Lisp:+.clj --fields=+iaS --extra=+q -R ."
 alias vursync="rsync -avhzcP --del --exclude=.svn/ --filter 'protect .svn/' "
 
+##### DEV UTILS #####
+test ! -d $BIN && mkdir -p $BIN
+echo 'find src/ -name *.java | xargs javac -d /tmp/javac -cp `find lib -name *.jar | tr "\n" ":"`' > $BIN/vucompiler.java
+echo 'for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done' > $BIN/vuorganizeimports.java
+echo 'mvn install dependency:copy-dependencies -DoutputDirectory=lib' > $BIN/vucopyjarstolib.maven
+#execute repetitively: watch -n 20 'gradle test 2>&1 | tail -n 40'
+#curl get: curl -k "url" -X GET -G -d 'arg1=val1' -d 'arg2=val2'
+#curl post: curl -k -v -X POST -d @- <<EOF <data> EOF
+#output similar lines in files: comm -12 <(sort file1) <(sort file2)
+#split stdin into chunks and pipe into parallel instances of application: seq 100 | parallel --pipe -n 20 cat
+#copy stdout into 2 commands - mkfifo or: cat f.txt | tee >(wc -l > /tmp/linecount) | <some other command>
+#exit when first command in pipe fails: set -o pipefail
+#iterate over pipe status if any part failed: exitarray=("${PIPESTATUS[@]}") && for i in "${!exitarray[@]}" ; do exitCode="${exitarray[$i]}" ... done
+
 
 ##### SVN #####
 alias svnd='svn diff'
@@ -70,22 +84,6 @@ if [[ "$DISPLAY" != "" ]] ; then
     xrdb -merge ~/.Xresources
     #setxkbmap -layout "us,ua" -variant "," -option "grp:alt_shift_toggle"
 fi
-
-
-##### DEV UTILS #####
-test ! -d $BIN && mkdir -p $BIN
-echo 'find src/ -name *.java | xargs javac -d /tmp/javac -cp `find lib -name *.jar | tr "\n" ":"`' > $BIN/vucompiler.java
-echo 'for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done' > $BIN/vuorganizeimports.java
-echo 'mvn install dependency:copy-dependencies -DoutputDirectory=lib' > $BIN/vucopyjarstolib.maven
-#execute repetitively: watch -n 20 'gradle test 2>&1 | tail -n 40'
-#curl get: curl -k "url" -X GET -G -d 'arg1=val1' -d 'arg2=val2'
-#curl post: curl -k -v -X POST -d @- <<EOF <data> EOF
-#output similar lines in files: comm -12 <(sort file1) <(sort file2)
-#split stdin into chunks and pipe into parallel instances of application: seq 100 | parallel --pipe -n 20 cat
-#copy stdout into 2 commands - mkfifo or: cat f.txt | tee >(wc -l > /tmp/linecount) | <some other command>
-#exit when first command in pipe fails: set -o pipefail
-#iterate over pipe status if any part failed: exitarray=("${PIPESTATUS[@]}") && for i in "${!exitarray[@]}" ; do exitCode="${exitarray[$i]}" ... done
-
 
 ##### VIM #####
 mkdir -p ~/.vim/colors
