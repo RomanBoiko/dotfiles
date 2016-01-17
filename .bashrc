@@ -53,7 +53,6 @@ alias gitpushm="git push origin master"
 alias gitpush="git push origin "
 
 GCOMPLETION=/etc/bash_completion.d/git && test -f $GCOMPLETION && source $GCOMPLETION
-#ssh-keygen -t rsa -b 4096 -C "boiko.roman@gmail.com"
 
 ##### SCREEN #####
 echo "vbell off" > ~/.screenrc
@@ -225,3 +224,16 @@ hi LineNr ctermfg=darkgrey ctermbg=darkgrey
 hi Search term=reverse ctermfg=white ctermbg=red
 EOF
 
+
+##### CREATE NEW ENV #####
+#sudo apt-get install vim git unzip
+#ssh-keygen -t rsa -C "boiko.roman@gmail.com"
+#mkdir ~/ws
+#cd ~/ws
+#git clone git@github.com:RomanBoiko/dotfiles.git
+#rm ~/.bashrc
+#ln -s ~/ws/dotfiles/.bashrc ~/.bashrc
+#source ~/.bashrc
+
+#sudo apt-get install tree curl wget libxml2-utils make g++
+#sudo apt-get install mc eclipse-platform xfonts-terminus chromium-browser lua5.2 ctags
