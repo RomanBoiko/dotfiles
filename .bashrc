@@ -16,6 +16,7 @@ export JAVA_HOME=$APPS/jdk
 export MAVEN_HOME=$APPS/maven
 export M2_HOME=$MAVEN_HOME
 export ANT_HOME=$APPS/ant
+export COMPILATION_RESULTS=/tmp/compile
 
 export PATH=$BIN:$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
@@ -31,9 +32,11 @@ alias vursync="rsync -avhzcP --del --exclude=.svn/ --filter 'protect .svn/' "
 
 ##### DEV UTILS #####
 test ! -d $BIN && mkdir -p $BIN
-echo 'find src/ -name *.java | xargs javac -d /tmp/javac -cp `find lib -name *.jar | tr "\n" ":"`' > $BIN/vucompiler.java
+mkdir -p $COMPILATION_RESULTS
+echo 'rm -Rf $COMPILATION_RESULTS/* && find src/ -name *.java | xargs javac -d $COMPILATION_RESULTS -cp `find lib -name *.jar | tr "\n" ":"`' > $BIN/vucompiler.java
 echo 'for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done' > $BIN/vuorganizeimports.java
 echo 'mvn install dependency:copy-dependencies -DoutputDirectory=lib' > $BIN/vucopyjarstolib.maven
+find $BIN -type f | xargs chmod +x
 #execute repetitively: watch -n 20 'gradle test 2>&1 | tail -n 40'
 #curl get: curl -k "url" -X GET -G -d 'arg1=val1' -d 'arg2=val2'
 #curl post: curl -k -v -X POST -d @- <<EOF <data> EOF
@@ -206,7 +209,7 @@ vnoremap H <gv
 nnoremap <Space> @q
 nnoremap <Leader>s :update<cr>
 
-set makeprg=javac.sh
+set makeprg=vucompiler.java
 set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
 map <F2> :make<Return>:copen<Return>
 map <F3> :cnext<Return>
@@ -220,6 +223,9 @@ hi StatusLine ctermfg=white ctermbg=darkgray cterm=NONE
 hi MatchParen ctermfg=white ctermbg=red cterm=none
 hi LineNr ctermfg=darkgrey ctermbg=darkgrey
 hi Search term=reverse ctermfg=white ctermbg=red
+
+iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
+iabbrev pub public void () {<CR><CR>}<UP>
 EOF
 
 
