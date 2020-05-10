@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="DevTool" default="xslt">
+<!--
+	==BEFORE USAGE==
+	You should have ApacheAnt in your $PATH
+	Download groovy-all.jar from any maven repo to ${devtool-dir}/lib
+
+	To use devtool:
+
+	navigate to checkout dir
+	type ant -f ant-tools.xml -p
+
+	you will see available ant targets
+-->
+
 	<property name="out"             value="out/out.xml"/>
 	<property name="xml"             value="in/in.xml"/>
 	<property name="f"               value="in/in.txt"/>
@@ -8,7 +21,7 @@
 	<property name="ssl"             value="in/in.cert"/>
 	<property name="xsd.dir"         value="in/in.xsd"/>
 		
-	<loadproperties srcFile="${basedir}/build.properties"/>
+	<!-- <loadproperties srcFile="${basedir}/build.properties"/> ->
 
 	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpath="lib/groovy-all.jar"/>
 	
