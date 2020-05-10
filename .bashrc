@@ -22,13 +22,10 @@ export PATH=$BIN:$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
 ##### ALIASES #####
 alias cdw='cd $WORKSPACE'
-alias cdb='cd $BIN'
 alias cda='cd $APPS'
 alias vimbash='vim ~/.bashrc && source ~/.bashrc'
-alias mc='mc -b'
-alias xmlf="xmllint --format"
-alias ctagsgen="ctags --langmap=Lisp:+.clj --fields=+iaS --extra=+q -R ."
-alias vursync="rsync -avhzcP --del --exclude=.svn/ --filter 'protect .svn/' "
+alias tmux="TERM=xterm-256color tmux"
+alias ff='find . -name'
 
 ##### DEV UTILS #####
 test ! -d $BIN && mkdir -p $BIN
@@ -61,6 +58,7 @@ echo '[color]'                         >> ~/.gitconfig
 echo 'ui = auto'                       >> ~/.gitconfig
 
 alias gitd="git diff"
+alias gitdc="git diff --cached"
 alias gitco="git checkout"
 alias gitb="git branch"
 alias gitst="git status"
@@ -69,14 +67,15 @@ alias gitup="git checkout master; git fetch origin; git pull origin master"
 alias gitpushm="git push origin master"
 alias gitpush="git push origin "
 
-GCOMPLETION=/etc/bash_completion.d/git && test -f $GCOMPLETION && source $GCOMPLETION
-
 ##### SCREEN #####
 echo "vbell off" > ~/.screenrc
 echo "hardstatus on" >> ~/.screenrc
 echo "startup_message off" >> ~/.screenrc
 echo "hardstatus alwayslastline" >> ~/.screenrc
 echo "hardstatus string ' %w %-017=%Y-%m-%d %c'" >> ~/.screenrc
+## C-a S   - split horizontally
+## C-a tab - jump to next display region
+## C-a X   - close split
 
 ##### INPUTRC #####
 echo "set bell-style none" > ~/.inputrc
@@ -90,67 +89,9 @@ fi
 
 ##### VIM #####
 mkdir -p ~/.vim/colors
-cat <<'EOF' > ~/.vim/colors/less.vim
-" vim color file
-" Maintainer:  Brian Nelson <nelsonbc@gmail.com>
-" Last Change: $Revision: 1.1 $ $Date: 2003/12/15 17:25:08 $
-"
-" Less is More - A minimal color scheme.
-" Disigned to work equally well on 8 or 16 colors, terminal or gui.
-
-hi clear
-set background=dark
-if exists("syntax_on")
-  syntax reset
-endif
-let g:colors_name = "less"
-
-hi Normal         term=none ctermfg=7 ctermbg=0 gui=none guifg=LightGray guibg=black
-hi Directory      term=bold cterm=bold ctermfg=blue guifg=Blue
-hi Search         term=reverse ctermfg=white  ctermbg=blue guifg=white guibg=Blue
-hi MoreMsg        term=bold cterm=bold ctermfg=darkgreen gui=bold guifg=DarkGreen
-hi ModeMsg        term=bold cterm=bold gui=bold guifg=White guibg=Blue
-hi LineNr         term=underline cterm=bold ctermfg=darkcyan guifg=DarkCyan
-hi Question       term=standout cterm=bold ctermfg=darkgreen gui=bold guifg=DarkGreen
-hi Comment        term=bold cterm=bold ctermfg=0 gui=none guifg=DarkGray
-hi Constant       term=bold cterm=none ctermfg=7 gui=none guifg=LightGray
-hi Special        term=bold cterm=none ctermfg=3 gui=none guifg=Orange
-hi Identifier     term=none cterm=none ctermfg=7 gui=none guifg=LightGray
-hi PreProc        term=underline cterm=bold ctermfg=7 gui=bold guifg=White
-hi Error          term=reverse cterm=bold ctermfg=7 ctermbg=1 gui=bold guifg=Black guibg=Red
-hi Todo           term=standout cterm=none ctermfg=0 ctermbg=7 guifg=Black guibg=White
-hi String         term=none cterm=none ctermfg=3 gui=none guifg=LightYellow
-hi Function       term=bold cterm=bold ctermfg=3 gui=none guifg=Yellow
-hi Statement      term=bold cterm=bold ctermfg=7 gui=bold guifg=White
-hi Include        term=bold cterm=bold ctermfg=4 gui=none guifg=LightBlue
-hi StorageClass   term=bold cterm=bold ctermfg=5 gui=none guifg=LightMagenta
-hi Type           term=none cterm=none ctermfg=7 gui=none guifg=LightGray
-hi Defined        term=bold cterm=bold ctermfg=6 gui=none guifg=LightCyan
-hi link Character       String
-hi link Number          Constant
-hi link Boolean         Constant
-hi link Float           Number
-hi link Conditional     Statement
-hi link Repeat          Statement
-hi link Label           Statement
-hi link Operator        Statement
-hi link Keyword         Statement
-hi link Exception       Statement
-hi link Macro           Include
-hi link PreCondit       PreProc
-hi link Structure       Type
-hi link Typedef         Type
-hi link Tag             Special
-hi link SpecialChar     Special
-hi link Delimiter       Special
-hi link SpecialComment  Special
-hi link Debug           Special
-EOF
+echo 'let g:colors_name = "vuvimcolors"' > ~/.vim/colors/vuvimcolors.vim
 
 cat <<'EOF' > ~/.vimrc
-"cd ~/.vim
-""git clone https://github.com/scrooloose/nerdtree.git bundle/nerdtree
-
 """""SETTINGS
 set t_Co=256
 set term=xterm
@@ -161,7 +102,10 @@ set incsearch
 set ruler
 set mouse=a
 set wildmenu
-"set wildmode=list:longest,full
+set wildignore+=*/target/*,*/classes/*,*/.class,*/.svn/*,*/.git/*,
+set wildmode=list:longest,full
+set wildignorecase
+
 set autoread
 set hlsearch
 set number
@@ -171,21 +115,20 @@ set nospell
 set nowrap
 "set wrap
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
-set expandtab
+"set expandtab
+set noexpandtab
 set tabstop=4
 set shiftwidth=4
 set noswapfile
-set wildignore+=*/target/*,*.class,*/.svn/*,*/.git/*
 set nobackup
 "set paste
+set nopaste
 "imap ;; <Esc>
-syntax on
+syntax off
 filetype plugin indent on
 
-""""""NAVIGATION
-set runtimepath^=~/.vim/bundle/nerdtree
-let g:NERDTreeDirArrows=0
-let g:NERDTreeWinSize=50
+"stop word on underscore
+set iskeyword-=_
 
 nnoremap <C-e> :E ./<cr>
 map j gj
@@ -216,18 +159,22 @@ map <F3> :cnext<Return>
 map <F4> :cprevious<Return>
 map <F5> :cclose<Return>
 
-colorscheme less
+hi clear
 set cursorline
 hi CursorLine cterm=bold
 hi StatusLine ctermfg=white ctermbg=darkgray cterm=NONE
 hi MatchParen ctermfg=white ctermbg=red cterm=none
 hi LineNr ctermfg=darkgrey ctermbg=darkgrey
 hi Search term=reverse ctermfg=white ctermbg=red
+hi Comment term=bold cterm=bold ctermfg=0 gui=none guifg=DarkGray
+hi String term=none cterm=none ctermfg=3 gui=none guifg=LightYellow
+hi Statement term=bold cterm=bold ctermfg=7 gui=bold guifg=White
+hi link Keyword Statement
+colorscheme vuvimcolors
 
 iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
 iabbrev pub public void () {<CR><CR>}<UP>
 EOF
-
 
 ##### CREATE NEW ENV #####
 #sudo apt-get install vim git unzip
@@ -239,5 +186,5 @@ EOF
 #ln -s ~/ws/dotfiles/.bashrc ~/.bashrc
 #source ~/.bashrc
 
-#sudo apt-get install tree curl wget libxml2-utils make g++
-#sudo apt-get install mc eclipse-platform xfonts-terminus chromium-browser lua5.2 ctags
+#sudo apt-get install curl wget libxml2-utils make g++
+#sudo apt-get install eclipse-platform xfonts-terminus chromium-browser lua5.2 ctags
