@@ -16,7 +16,6 @@ export JAVA_HOME=$APPS/jdk
 export MAVEN_HOME=$APPS/maven
 export M2_HOME=$MAVEN_HOME
 export ANT_HOME=$APPS/ant
-export COMPILATION_RESULTS=/tmp/compile
 
 export PATH=$BIN:$JAVA_HOME/bin:$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
@@ -26,22 +25,6 @@ alias cda='cd $APPS'
 alias vimbash='vim ~/.bashrc && source ~/.bashrc'
 alias tmux="TERM=xterm-256color tmux"
 alias ff='find . -name'
-
-##### DEV UTILS #####
-test ! -d $BIN && mkdir -p $BIN
-mkdir -p $COMPILATION_RESULTS
-echo 'rm -Rf $COMPILATION_RESULTS/* && find src/ -name *.java | xargs javac -d $COMPILATION_RESULTS -cp `find lib -name *.jar | tr "\n" ":"`' > $BIN/vucompiler.java
-echo 'for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done' > $BIN/vuorganizeimports.java
-echo 'mvn install dependency:copy-dependencies -DoutputDirectory=lib' > $BIN/vucopyjarstolib.maven
-find $BIN -type f | xargs chmod +x
-#execute repetitively: watch -n 20 'gradle test 2>&1 | tail -n 40'
-#curl get: curl -k "url" -X GET -G -d 'arg1=val1' -d 'arg2=val2'
-#curl post: curl -k -v -X POST -d @- <<EOF <data> EOF
-#output similar lines in files: comm -12 <(sort file1) <(sort file2)
-#split stdin into chunks and pipe into parallel instances of application: seq 100 | parallel --pipe -n 20 cat
-#copy stdout into 2 commands - mkfifo or: cat f.txt | tee >(wc -l > /tmp/linecount) | <some other command>
-#exit when first command in pipe fails: set -o pipefail
-#iterate over pipe status if any part failed: exitarray=("${PIPESTATUS[@]}") && for i in "${!exitarray[@]}" ; do exitCode="${exitarray[$i]}" ... done
 
 
 ##### SVN #####
@@ -80,12 +63,6 @@ echo "hardstatus string ' %w %-017=%Y-%m-%d %c'" >> ~/.screenrc
 ##### INPUTRC #####
 echo "set bell-style none" > ~/.inputrc
 
-##### XTERM #####
-if [[ "$DISPLAY" != "" ]] ; then
-    echo "xterm*font:     *-fixed-*-*-*-15-*" > ~/.Xresources
-    xrdb -merge ~/.Xresources
-    #setxkbmap -layout "us,ua" -variant "," -option "grp:alt_shift_toggle"
-fi
 
 ##### VIM #####
 mkdir -p ~/.vim/colors
@@ -175,16 +152,3 @@ colorscheme vuvimcolors
 iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
 iabbrev pub public void () {<CR><CR>}<UP>
 EOF
-
-##### CREATE NEW ENV #####
-#sudo apt-get install vim git unzip
-#ssh-keygen -t rsa -C "boiko.roman@gmail.com"
-#mkdir ~/ws
-#cd ~/ws
-#git clone git@github.com:RomanBoiko/dotfiles.git
-#rm ~/.bashrc
-#ln -s ~/ws/dotfiles/.bashrc ~/.bashrc
-#source ~/.bashrc
-
-#sudo apt-get install curl wget libxml2-utils make g++
-#sudo apt-get install eclipse-platform xfonts-terminus chromium-browser lua5.2 ctags
