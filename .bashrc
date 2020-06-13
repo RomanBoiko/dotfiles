@@ -69,7 +69,6 @@ mkdir -p ~/.vim/colors
 echo 'let g:colors_name = "vuvimcolors"' > ~/.vim/colors/vuvimcolors.vim
 
 cat <<'EOF' > ~/.vimrc
-"""""SETTINGS
 set t_Co=256
 set term=xterm
 
@@ -90,9 +89,7 @@ set autoindent
 set cindent
 set nospell
 set nowrap
-"set wrap
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
-"set expandtab
 set noexpandtab
 set tabstop=4
 set shiftwidth=4
@@ -100,42 +97,35 @@ set noswapfile
 set nobackup
 "set paste
 set nopaste
-"imap ;; <Esc>
 syntax off
 filetype plugin indent on
 
 "stop word on underscore
 set iskeyword-=_
 
-nnoremap <C-e> :E ./<cr>
+"move in wrapped lines
 map j gj
 map k gk
 
 nnoremap <C-h> <Esc>:vimgrep  **/*<Left><Left><Left><Left><Left>
-nnoremap <C-l> <Esc>:vimgrep <c-r>" **/*<cr><Esc>:cw<cr>
 nnoremap <C-p> <Esc>:e **/
 
-" see search results : <Esc>:cw<cr>
-" next occurance: :cn
 
-
-""""""EDITING
 "moving selected block in visual mode
 vnoremap K xkP\`[V\`]
 vnoremap J xp\`[V\`]
 vnoremap L >gv
 vnoremap H <gv
 
+"replay macro, recorded with qq
 nnoremap <Space> @q
-nnoremap <Leader>s :update<cr>
 
 set makeprg=vucompiler.java
 set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
-map <F2> :make<Return>:copen<Return>
-map <F3> :cnext<Return>
-map <F4> :cprevious<Return>
-map <F5> :cclose<Return>
+map <F2> :make<cr>:copen<cr>
+"quickfix window :copen, :cnext or :cn, :cprevious, :cclose :cw (search results?)
 
+"colorscheme
 hi clear
 set cursorline
 hi CursorLine cterm=bold
@@ -149,6 +139,20 @@ hi Statement term=bold cterm=bold ctermfg=7 gui=bold guifg=White
 hi link Keyword Statement
 colorscheme vuvimcolors
 
+"quick template examples
 iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
 iabbrev pub public void () {<CR><CR>}<UP>
 EOF
+
+function vujava_organize_imports() {
+for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done
+}
+
+function vujava_compile() {
+RESULTS=/tmp
+find src/ -name *.java | xargs javac -d $RESULTS -cp `find lib -name *.jar | tr "\n" ":"`
+}
+
+function vumvn_copy_jars_to_lib() {
+mvn install dependency:copy-dependencies -DoutputDirectory=lib
+}
