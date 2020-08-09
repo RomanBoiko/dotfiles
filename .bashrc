@@ -26,7 +26,6 @@ alias vimbash='vim ~/.bashrc && source ~/.bashrc'
 alias tmux="TERM=xterm-256color tmux"
 alias ff='find . -name'
 
-
 ##### SVN #####
 alias svnd='svn diff'
 alias svnl='svn changelist tc'
@@ -65,41 +64,34 @@ echo "set bell-style none" > ~/.inputrc
 
 
 ##### VIM #####
-mkdir -p ~/.vim/colors
-echo 'let g:colors_name = "vuvimcolors"' > ~/.vim/colors/vuvimcolors.vim
-
 cat <<'EOF' > ~/.vimrc
 set t_Co=256
 set term=xterm
-
 set encoding=utf8
 set ffs=unix,dos
-set incsearch
-set ruler
-set mouse=a
+set noswapfile
+set nobackup
+
+set number
+set nospell
+set nowrap
+
 set wildmenu
 set wildignore+=*/target/*,*/classes/*,*/.class,*/.svn/*,*/.git/*,
 set wildmode=list:longest,full
 set wildignorecase
 
-set autoread
+set incsearch
 set hlsearch
-set number
-set autoindent
-set cindent
-set nospell
-set nowrap
+
+syntax off
+set nopaste
 set list listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:_
 set noexpandtab
 set tabstop=4
 set shiftwidth=4
-set noswapfile
-set nobackup
-"set paste
-set nopaste
-syntax off
-filetype plugin indent on
-
+set autoindent
+set cindent
 "stop word on underscore
 set iskeyword-=_
 
@@ -107,16 +99,14 @@ set iskeyword-=_
 map j gj
 map k gk
 
-nnoremap <C-h> <Esc>:vimgrep  **/*<Left><Left><Left><Left><Left>
-nnoremap <C-p> <Esc>:e **/
-
-
 "moving selected block in visual mode
 vnoremap K xkP\`[V\`]
 vnoremap J xp\`[V\`]
 vnoremap L >gv
 vnoremap H <gv
 
+nnoremap <C-h> <Esc>:vimgrep  **/*<Left><Left><Left><Left><Left>
+nnoremap <C-p> <Esc>:e **/
 "replay macro, recorded with qq
 nnoremap <Space> @q
 
@@ -137,22 +127,23 @@ hi Comment term=bold cterm=bold ctermfg=0 gui=none guifg=DarkGray
 hi String term=none cterm=none ctermfg=3 gui=none guifg=LightYellow
 hi Statement term=bold cterm=bold ctermfg=7 gui=bold guifg=White
 hi link Keyword Statement
-colorscheme vuvimcolors
 
 "quick template examples
 iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
 iabbrev pub public void () {<CR><CR>}<UP>
 EOF
 
-function vujava_organize_imports() {
+
+### UTILITY COMMANDS/SCRIPTS ###
+function vu_java_organize_imports() {
 for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done
 }
 
-function vujava_compile() {
+function vu_java_compile() {
 RESULTS=/tmp
 find src/ -name *.java | xargs javac -d $RESULTS -cp `find lib -name *.jar | tr "\n" ":"`
 }
 
-function vumvn_copy_jars_to_lib() {
+function vu_mvn_copy_jars_to_lib() {
 mvn install dependency:copy-dependencies -DoutputDirectory=lib
 }
