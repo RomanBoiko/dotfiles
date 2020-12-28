@@ -76,8 +76,8 @@ set number
 set nospell
 set nowrap
 
-set wildmenu
-set wildignore+=*/target/*,*/classes/*,*/.class,*/.svn/*,*/.git/*,
+set nowildmenu
+set wildignore+=*/target/*,*/classes/*,*/.class,*/.svn/*,*/.git/*
 set wildmode=list:longest,full
 set wildignorecase
 
@@ -92,8 +92,8 @@ set tabstop=4
 set shiftwidth=4
 set autoindent
 set cindent
-"stop word on underscore
-set iskeyword-=_
+"don't stop word on underscore
+set iskeyword+=_
 
 "move in wrapped lines
 map j gj
@@ -104,6 +104,10 @@ vnoremap K xkP\`[V\`]
 vnoremap J xp\`[V\`]
 vnoremap L >gv
 vnoremap H <gv
+
+"quickly insert an empty new line without entering insert mode
+nnoremap <Leader>o o<Esc>
+nnoremap <Leader>O O<Esc>
 
 nnoremap <C-h> <Esc>:vimgrep  **/*<Left><Left><Left><Left><Left>
 nnoremap <C-p> <Esc>:e **/
@@ -147,3 +151,9 @@ find src/ -name *.java | xargs javac -d $RESULTS -cp `find lib -name *.jar | tr 
 function vu_mvn_copy_jars_to_lib() {
 mvn install dependency:copy-dependencies -DoutputDirectory=lib
 }
+
+##Tags format. i.e. save that lines to ~/erlang_tags
+##  Load tags => :set tags+=~/erlang_tags
+##  Search tags => :tag /<search pattern or ...>
+#facade:start	/mnt/c/dev/ws/try/facade.erl	/start() -> /
+#helloc:Veh	/mnt/c/dev/ws/try/helloc.c	/typedef struct Veh/
