@@ -137,23 +137,62 @@ iabbrev syso System.out.println("");<LEFT><LEFT><LEFT>
 iabbrev pub public void () {<CR><CR>}<UP>
 EOF
 
-
-### UTILITY COMMANDS/SCRIPTS ###
-function vu_java_organize_imports() {
-for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done
-}
-
-function vu_java_compile() {
-RESULTS=/tmp
-find src/ -name *.java | xargs javac -d $RESULTS -cp `find lib -name *.jar | tr "\n" ":"`
-}
-
-function vu_mvn_copy_jars_to_lib() {
-mvn install dependency:copy-dependencies -DoutputDirectory=lib
-}
-
-##Tags format. i.e. save that lines to ~/erlang_tags
+###VIM Tags format. i.e. save that lines to ~/erlang_tags
 ##  Load tags => :set tags+=~/erlang_tags
 ##  Search tags => :tag /<search pattern or ...>
 #facade:start	/mnt/c/dev/ws/try/facade.erl	/start() -> /
 #helloc:Veh	/mnt/c/dev/ws/try/helloc.c	/typedef struct Veh/
+
+
+### UTILITY COMMANDS/SCRIPTS ###
+function java_organize_imports() {
+  for f in `find . -name "*.java"`; do echo "==> $f";grep -P "^import" $f | grep -o -P "[^.]+(?=;)" | grep -v "*" > /tmp/imports.txt; for im in `cat /tmp/imports.txt`; do if [ `grep -v -P "^import" $f | grep -P "[^\w\d$im[^\w\d]" | wc -l` -eq 0 ]; then echo "removing import for $im"; sed -i "/\.$im;$/d" $f; fi; done; done
+}
+
+function java_compile() {
+  RESULTS=/tmp
+  find src/ -name *.java | xargs javac -d $RESULTS -cp `find lib -name *.jar | tr "\n" ":"`
+}
+
+function mvncopyjars() {
+  mvn dependency:copy-dependencies -DoutputDirectory=lib
+}
+
+function eclipsefiles() {
+  cat > .project << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>$(basename $(pwd))</name>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
+EOF
+
+  cat > .classpath << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+    <classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
+    <classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+    <classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+        <attributes>
+            <attribute name="module" value="true"/>
+        </attributes>
+    </classpathentry>
+$(for f in `find lib -type f -name *.jar`; do echo "    <classpathentry kind=\"lib\" path=\"${f}\"/>"; done)
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>
+EOF
+}
+
+function eclipseproject() {
+  rm -Rf lib && mvncopyjars && eclipsefiles
+}
