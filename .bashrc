@@ -178,10 +178,10 @@ EOF
   cat > .classpath << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-    <classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
-    <classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-    <classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+    $( [ -d "src/main/java" ] && echo '<classpathentry including="**/*.java" kind="src" path="src/main/java"/>')
+    $( [ -d "src/test/java" ] && echo '<classpathentry including="**/*.java" kind="src" path="src/test/java"/>')
+    $( [ -d "src/main/resources" ] && echo '<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>')
+    $( [ -d "src/test/resources" ] && echo '<classpathentry excluding="**/*.java" kind="src" path="src/test/resources"/>')
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
         <attributes>
             <attribute name="module" value="true"/>
@@ -193,6 +193,6 @@ $(for f in `find lib -type f -name *.jar`; do echo "    <classpathentry kind=\"l
 EOF
 }
 
-function eclipseproject() {
+function eclipsemvnproject() {
   rm -Rf lib && mvncopyjars && eclipsefiles
 }
